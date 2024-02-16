@@ -52,13 +52,10 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 // *****************************************************************************
 
-#include <stdint.h>
-#include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include "system_config.h"
 #include "system_definitions.h"
-#include "Mc32DriverAdc.h"
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus  // Provide C++ Compatibility
@@ -96,8 +93,6 @@ typedef enum
 
 } APP_STATES;
 
-
-int nextState;
 
 // *****************************************************************************
 /* Application Data
@@ -200,6 +195,8 @@ void APP_Initialize ( void );
   Remarks:
     This routine must be called from SYS_Tasks() routine.
  */
+
+//PROTOTYPE DES FONCTIONS UTILISÉES
 
 void APP_Tasks( void );
 void APP_UpdateState ( APP_STATES NewState );
