@@ -62,7 +62,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "system/common/sys_common.h"
 #include "app.h"
 #include "system_definitions.h"
-#include "app.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -73,26 +72,24 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 int counter_chen = 0;
 
 void __ISR(_TIMER_1_VECTOR, ipl3AUTO) IntHandlerDrvTmrInstance0(void)
-{
-    PLIB_INT_SourceFlagClear(INT_ID_0,INT_SOURCE_TIMER_1);
-    
-    static int stateTimer = 0;          // Déclaration et initialisation du timer
+{    
+    static int stateTimer = 0;          // DÃ©claration et initialisation du timer
      
     if(stateTimer == 29)
     {
         LEDS_OFF();         // Extinction les LEDs
-        APP_UpdateState(APP_STATE_SERVICE_TASKS);           // Mise à jour l'état à APP_STATE_SERVICE_TASKS
-        BSP_InitADC10();            //Initialisation de l'ADC
-        stateTimer ++;        // Incrémentation le compteur d'état
+        APP_UpdateState(APP_STATE_SERVICE_TASKS);           // Mise Ã  jour l'Ã©tat Ã  APP_STATE_SERVICE_TASKS
+        stateTimer++;        // IncrÃ©mentation du compteur d'Ã©tat
     }
     else if(stateTimer > 29)
     {
-        LEDS();         // Rentre dans la fonction LEDS
-        APP_UpdateState(APP_STATE_SERVICE_TASKS);        // Mise à jour l'état à APP_STATE_SERVICE_TASKS
+        APP_UpdateState(APP_STATE_SERVICE_TASKS);        // Mise Ã  jour l'Ã©tat Ã  APP_STATE_SERVICE_TASKS
     }
     else{
-        stateTimer ++;          // Incrémentation le compteur d'état
+        stateTimer++;          // IncrÃ©mentation du compteur d'Ã©tat
     }
+ 
+ PLIB_INT_SourceFlagClear(INT_ID_0,INT_SOURCE_TIMER_1);
 }
  /*******************************************************************************
  End of File
