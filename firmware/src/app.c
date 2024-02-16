@@ -55,6 +55,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 #include "app.h"
 #include "Mc32DriverLcd.h"
+#include "Mc32DriverAdc.h"
 
 
 // *****************************************************************************
@@ -146,29 +147,27 @@ void APP_Tasks ( void )
         /* Application's initial state. */
         case APP_STATE_INIT:
         {
-            lcd_init();         // Initialisation de l'écran LCD
-            lcd_bl_on();        // Allumer le rétroéclairage de l'écran LCD
+            lcd_init();         // Initialisation de l'Ã©cran LCD
+            lcd_bl_on();        // Allumer le rÃ©troÃ©clairage de l'Ã©cran LCD
             lcd_gotoxy(1,1);
             printf_lcd("TP0 Led+AD 2023-24");
             lcd_gotoxy(1,2);
             printf_lcd("Antonio Do Carmo");
+
+            BSP_InitADC10();            //Initialisation de l'ADC
             
             LEDS_ON();          // Allumer les LED
             
-            DRV_TMR0_Start();           // Démarrer le Timer 0
+            DRV_TMR0_Start();           // DÃ©marrer le Timer 0
                                     
-            bool appInitialized = true;         // Drapeau indiquant si l'application est initialisée
-            
-            if (appInitialized)
-            {
-                APP_UpdateState(APP_STATE_WAIT);            // Mettre à jour l'état à APP_STATE_WAIT
-            }
+            APP_UpdateState(APP_STATE_WAIT);            // Mettre Ã  jour l'Ã©tat Ã  APP_STATE_WAIT
+          
             break;
         }
         
         case  APP_STATE_WAIT:
         {
-            // Aucune tâche spécifique dans cet état, simplement en attente
+            // Aucune tÃ¢che spÃ©cifique dans cet Ã©tat, simplement en attente
             break;
         }
 
@@ -181,8 +180,10 @@ void APP_Tasks ( void )
             
             lcd_gotoxy(11,3);
             printf_lcd("CH1: %4d",appData.AdcRes.Chan1);        // Afficher la valeur du canal ADC 1
+
+            LEDS();         // Rentre dans la fonction LEDS
             
-            APP_UpdateState(APP_STATE_WAIT);            // Mettre à jour l'état à APP_STATE_WAIT
+            APP_UpdateState(APP_STATE_WAIT);            // Mettre Ã  jour l'Ã©tat Ã  APP_STATE_WAIT
 
             break;
         }
@@ -203,21 +204,21 @@ void APP_Tasks ( void )
   Fonction :
     void LEDS_ON(void)
 
-  Résumé :
+  RÃ©sumÃ© :
     Allume toutes les LEDs du chenillard.
 
   Description :
     Cette fonction est responsable d'allumer toutes les LEDs du chenillard. 
-    Elle active séparément chaque LED en utilisant la fonction 
+    Elle active sÃ©parÃ©ment chaque LED en utilisant la fonction 
     BSP_LEDOn.
 
   Precondition:
-    Le BSP doit être initialisé
+    Le BSP doit Ãªtre initialisÃ©
 
-  Paramètres:
+  ParamÃ¨tres:
     Aucun.
 
-  Résultat:
+  RÃ©sultat:
     Aucun.
 
   Remarques:
@@ -225,35 +226,31 @@ void APP_Tasks ( void )
 */
 
 void LEDS_ON(void){
-    BSP_LEDOn(BSP_LED_0);
-    BSP_LEDOn(BSP_LED_1);
-    BSP_LEDOn(BSP_LED_2);
-    BSP_LEDOn(BSP_LED_3);
-    BSP_LEDOn(BSP_LED_4);
-    BSP_LEDOn(BSP_LED_5);
-    BSP_LEDOn(BSP_LED_6);
-    BSP_LEDOn(BSP_LED_7);   
-    }
+       for (int i = 0; i < 8; i++) 
+       {         
+            BSP_LEDOn(i);     
+       }
+ }
 
 /*******************************************************************************
   Fonction :
     void LEDS_OFF(void)
 
-  Résumé :
+  RÃ©sumÃ© :
     Eteint toutes les LEDs du chenillard.
 
   Description :
-    Cette fonction est responsable d'éteindre toutes les LEDs du chenillard. 
-    Elle desactive séparément chaque LED en utilisant la fonction 
+    Cette fonction est responsable d'Ã©teindre toutes les LEDs du chenillard. 
+    Elle desactive sÃ©parÃ©ment chaque LED en utilisant la fonction 
     BSP_LEDOff.
 
   Precondition:
-    Le BSP doit être initialisé
+    Le BSP doit Ãªtre initialisÃ©
 
-  Paramètres:
+  ParamÃ¨tres:
     Aucun.
 
-  Résultat:
+  RÃ©sultat:
     Aucun.
 
   Remarques:
@@ -261,35 +258,31 @@ void LEDS_ON(void){
 */
 
 void LEDS_OFF(){
-    BSP_LEDOff(BSP_LED_0);
-    BSP_LEDOff(BSP_LED_1);
-    BSP_LEDOff(BSP_LED_2);
-    BSP_LEDOff(BSP_LED_3);
-    BSP_LEDOff(BSP_LED_4);
-    BSP_LEDOff(BSP_LED_5);
-    BSP_LEDOff(BSP_LED_6);
-    BSP_LEDOff(BSP_LED_7);  
-}
+     for (int i = 0; i < 8; i++) 
+     {         
+         BSP_LEDOn(i);     
+     }
+  }
 
 /*******************************************************************************
   Fonction :
     void APP_UpdateState(APP_STATES NewState)
 
-  Résumé :
-    Met à jour l'état de l'application avec le nouvel état spécifié.
+  RÃ©sumÃ© :
+    Met Ã  jour l'Ã©tat de l'application avec le nouvel Ã©tat spÃ©cifiÃ©.
 
   Description :
-    Cette fonction est chargée de mettre à jour l'état de l'application avec le 
-    nouvel état fourni en paramètre. Elle affecte directement la variable 
+    Cette fonction est chargÃ©e de mettre Ã  jour l'Ã©tat de l'application avec le 
+    nouvel Ã©tat fourni en paramÃ¨tre. Elle affecte directement la variable 
     globale "appData.state" avec la valeur de "NewState".
 
   Precondition:
-    Le BSP doit être initialisé
+    Le BSP doit Ãªtre initialisÃ©
 
-  Paramètres:
+  ParamÃ¨tres:
     Aucun.
 
-  Résultat:
+  RÃ©sultat:
     Aucun.
 
   Remarques:
@@ -305,23 +298,23 @@ void APP_UpdateState ( APP_STATES NewState ){
   Fonction :
     void LEDS(void)
 
-  Résumé :
-    Gère le chenillard en allumant successivement une LED à la fois.
+  RÃ©sumÃ© :
+    GÃ¨re le chenillard en allumant successivement une LED Ã  la fois.
 
   Description :
     Cette fonction est responsable de la gestion du chenillard en allumant 
-    successivement une LED à la fois dans un ordre défini. Elle utilise une 
-    variable statique "counter_leds" pour suivre l'état actuel du chenillard 
-    et effectue les opérations nécessaires pour éteindre la LED courante et 
+    successivement une LED Ã  la fois dans un ordre dÃ©fini. Elle utilise une 
+    variable statique "counter_leds" pour suivre l'Ã©tat actuel du chenillard 
+    et effectue les opÃ©rations nÃ©cessaires pour Ã©teindre la LED courante et 
     allumer la suivante en fonction de cette variable.
 
   Precondition:
     Aucun.
 
-  Paramètres:
-    NewState : Nouvel état de l'application à définir.
+  ParamÃ¨tres:
+    NewState : Nouvel Ã©tat de l'application Ã  dÃ©finir.
 
-  Résultat:
+  RÃ©sultat:
     Aucun.
 
   Remarques:
